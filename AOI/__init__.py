@@ -1,7 +1,7 @@
 import os
 import AOIGetter as aoiWe
 
-udir = r"D:\Project\amapCrawler\AOI\data_class"  # 存储poi信息的文件夹
+udir = r"D:\data"  # 存储poi信息的文件夹
 
 
 def getFiles(path):
@@ -18,4 +18,7 @@ for i in s:
     Files += getFiles(i)
 print(Files)
 for f in Files:
-    aoiWe.addAoi(f)
+    try:
+        aoiWe.addAoi(f)
+    except aoiWe.pd.errors.EmptyDataError:
+        print(f, '空文件跳过')
