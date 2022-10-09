@@ -18,12 +18,17 @@ def getByShapes(shape, types):
         arOj = json.loads(ret.text)
         # print(arOj)
         pois = arOj['pois']
+        if len(pois) == 0:
+            return
         for num in range(len(pois)):
             data = pois[num]
             if data['pname'] != '广东省':
                 continue
-            L.append([data['id'], data['parent'] if len(data['parent']) > 0 else '',
+            try:
+                L.append([data['id'], data['parent'] if len(data['parent']) > 0 else '',
                       data['name'], data['type'], data['address'], data['location']])
+            except:
+                print(data)
         if int(arOj['count']) > 0:
             # count != 0 时代表还未获取完全，递归继续读取
             # print(arOj['count'], page)
