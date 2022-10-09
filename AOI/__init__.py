@@ -1,20 +1,21 @@
 import os
 import AOIGetter as aoiWe
 
-udir = "D:\\Project\\amapCrawler\\AOI\\data_class"  # 存储poi信息的文件夹
+udir = r"D:\Project\amapCrawler\AOI\data_class"  # 存储poi信息的文件夹
 
 
-def getFiles(path, topath):
+def getFiles(path):
     files = os.listdir(path)  # 得到文件夹下的所有文件名称
     s = []
-    # o = []
     for file in files:  # 遍历文件夹
         s.append(path + '\\' + file)
     return s
 
 
 s = getFiles(udir)
-
-
+Files = []
 for i in s:
-    aoiWe.addAoi(i)
+    Files += getFiles(i)
+print(Files)
+for f in Files:
+    aoiWe.addAoi(f)

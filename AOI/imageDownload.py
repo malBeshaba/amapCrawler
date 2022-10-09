@@ -9,19 +9,31 @@ saveDir = 'D:\\Project\\amapCrawler\\AOI\\image\\'  # 图片存储路径
 udir = r'D:\Project\amapCrawler\AOI\data_class'  # poi信息存储路径
 
 
+def getFiles(path):
+    files = os.listdir(path)  # 得到文件夹下的所有文件名称
+    s = []
+    for file in files:  # 遍历文件夹
+        s.append(path + '\\' + file)
+    return s
+
+
 def createDir(path, saveDir):
     files = os.listdir(path)  # 得到文件夹下的所有文件名称
     D = {}
     for file in files:  # 遍历文件夹
         # s.append(path + '\\' + file)
         # o.append(saveDir+ file.split('.')[0] + '\\')
-        D[path + '\\' + file] = saveDir+ file.split('.')[0] + '\\'
+        D[path + '\\' + file] = saveDir + file.split('.')[0] + '\\'
         if not os.path.exists(saveDir + file.split('.')[0]):
             os.mkdir(saveDir + file.split('.')[0])
     return D
 
 
-D = createDir(udir, saveDir)
+s = getFiles(udir)
+Files = []
+for i in s:
+    Files += getFiles(i)
+D = createDir(Files, saveDir)
 
 
 def downloadImage(sDir, image_name, IMAGE_URL):

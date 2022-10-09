@@ -1,6 +1,7 @@
 import amapApi as am
 import pandas as pd
 from getRectangle import getShape
+import os
 
 saveDir = 'D:\\Project\\amapCrawler\\AOI\\data_class\\'  # 保存地址
 
@@ -12,8 +13,10 @@ D = {'公园广场': '110100', '公园': '110101', '动物园': '110102', '植�
 
 for i in range(0, 11):  # 分了100份，0-99，大家自己填自己的范围（开始，结束+1）
      shape = getShape(i)
+     if not os.path.exists(saveDir + str(i)):
+          os.mkdir(saveDir + str(i))
      for key in D.keys():
           df = pd.DataFrame(am.getByShapes(shape, D[key]),
                             columns=['id', 'parent', 'name', 'type', 'address', 'location'])
-          df.to_csv(saveDir + key + '.csv', index=False)
+          df.to_csv(saveDir + str(i) + '\\' + key + '.csv', index=False)
 
