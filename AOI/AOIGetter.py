@@ -10,7 +10,7 @@ from tqdm import tqdm  # 进度条
 
 option = Options()
 option.add_argument('disable-blink-features=AutomationControlled')
-# option.add_argument("--proxy-server=http://120.194.55.139:6969")
+# option.add_argument("--proxy-server=http://117.41.38.18:9000")
 base_url = "https://ditu.amap.com/detail/get/detail?id="
 shapeStr = ''
 
@@ -66,10 +66,10 @@ def verify_page(browser, poi):
 
 def ac_page(browser, poi):
     browser.find_element_by_id('account').click()
-    browser.find_element_by_id('account').send_keys("这里是账号")
+    browser.find_element_by_id('account').send_keys("18822149353")
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('password').click()
-    browser.find_element_by_id('password').send_keys('这里是密码')
+    browser.find_element_by_id('password').send_keys('wsyxxbb111')
     time.sleep(random.random() * 0.01)
     btn = browser.find_element_by_id('nc_1_n1z')  # 根据id定位滑块控件
     action = ActionChains(browser)
@@ -118,7 +118,7 @@ def webVisiter(poi):
         # print('进入自动验证:', poi)
         verify_page(web, poi)
         num += 1
-        webVisiter(poi)
+        # webVisiter(poi)
     elif isElementFromID(web, 'beacon-aplus'):  # 出现账号密码验证
         ac_page(web, poi)
         time.sleep(3)

@@ -5,14 +5,15 @@ import requests
 import json
 from tqdm import tqdm
 
-saveDir = 'D:\\Project\\amapCrawler\\AOI\\image\\'  # 图片存储路径
-udir = r'D:\Project\amapCrawler\AOI\data_class'  # poi信息存储路径
+saveDir = 'D:\\image\\'  # 图片存储路径
+udir = r'D:\data'  # poi信息存储路径
 
 
 def getFiles(path):
     files = os.listdir(path)  # 得到文件夹下的所有文件名称
     s = []
     for file in files:  # 遍历文件夹
+        # if '.' not in file:
         s.append(path + '\\' + file)
     return s
 
@@ -30,10 +31,6 @@ def createDir(path, saveDir):
 
 
 s = getFiles(udir)
-Files = []
-for i in s:
-    Files += getFiles(i)
-D = createDir(Files, saveDir)
 
 
 def downloadImage(sDir, image_name, IMAGE_URL):
@@ -42,8 +39,19 @@ def downloadImage(sDir, image_name, IMAGE_URL):
         f.write(r.content)
 
 
+D = {}
+for i in s:
+    DT = createDir(i, saveDir)
+    D.update(DT)
+
+print(D)
+
 for file in D.keys():
-    df = pd.read_csv(file)
+    try:
+        df = pd.read_csv(file)
+    except pd.errors.EmptyDataError:
+        print(file, '空文件跳过')
+        continue
     for item in tqdm(df['id']):
         id_url = 'https://restapi.amap.com/v3/place/detail'
         params = {'key': am.key, 'id': item}
