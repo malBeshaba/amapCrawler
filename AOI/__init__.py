@@ -1,25 +1,20 @@
 import os
-import amapApi as am
-# import pandas as pd
+import AOIGetter as aoiWe
 
-udir = "D:\\Project\\amapCrawler\\AOI\\data_class"
-odir = "E:\\BaiduNetdiskDownload\\try"
-shp = "D:\\\Project\\python\\amapCrawler\\AOI\\classOut"
+udir = "D:\\Project\\amapCrawler\\AOI\\data_class"  # 存储poi信息的文件夹
 
 
 def getFiles(path, topath):
     files = os.listdir(path)  # 得到文件夹下的所有文件名称
     s = []
-    o = []
+    # o = []
     for file in files:  # 遍历文件夹
         s.append(path + '\\' + file)
-        o.append(topath + '\\' + file)
-    return s, o
+    return s
 
 
-s, o = getFiles(udir, odir)
-print(s)
+s = getFiles(udir)
 
-import AOIGetter as aoiWe
+
 for i in s:
     aoiWe.addAoi(i)

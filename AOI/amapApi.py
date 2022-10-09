@@ -2,34 +2,11 @@ import pandas as pd
 import requests
 import json
 
-# import kuai as aoi
-
-key1 = '686615d2c52666778a6d38b59eaea79e'
 key = '73498752e6144a6dffda623f15610e2a'
-coor = '116.473168,39.993015'
 
 
 def getByShapes(shape, types):
     shape_url = 'https://restapi.amap.com/v3/place/polygon'
-    maxx,minx,maxy,miny = 0.0, 400.0, 0.0, 400.0
-    if ';' in shape:
-        # shape = shape.replace(';', '|')
-        # print(shape)
-        # print(len(shape.split('|')))
-        ss = shape.split(';')
-        for s in ss:
-            ls = s.split(',')
-            x = float(ls[0])
-            y = float(ls[1])
-            if x > maxx:
-                maxx = x
-            if x < minx:
-                minx = x
-            if y > maxy:
-                maxy = y
-            if y < miny:
-                miny = y
-        shape = str(minx) + ',' + str(miny) + '|' + str(maxx) + ',' + str(miny) + '|' + str(maxx) + ',' + str(maxy) + '|' + str(minx) + ',' + str(maxy) + '|' + str(minx) + ',' + str(miny)
     L = []
 
     def getNext(page=1):

@@ -75,7 +75,6 @@ def ac_page(browser, poi):
     action = ActionChains(browser)
     action.click_and_hold(btn).perform()  # 点击并按住滑块
     time.sleep(random.random() * 5)  # 等待随机时间
-    # for i in range(40):
     action.move_by_offset(400, 0).perform()  # 滑动滑块
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('login_btn').click()
@@ -120,10 +119,7 @@ def webVisiter(poi):
         verify_page(web, poi)
         num += 1
         webVisiter(poi)
-    elif isElementFromID(web, 'beacon-aplus'):  # 出现账号密码验证环节通过重新初始化浏览器解决
-        # print('出现密码验证')
-        # web.quit()
-        # web = initWeb(option)
+    elif isElementFromID(web, 'beacon-aplus'):  # 出现账号密码验证
         ac_page(web, poi)
         time.sleep(3)
         web.get(url)
