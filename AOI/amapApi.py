@@ -3,12 +3,12 @@ import requests
 import json
 
 key = '73498752e6144a6dffda623f15610e2a'
-
+error = []
 
 def getByShapes(shape, types):
     shape_url = 'https://restapi.amap.com/v3/place/polygon'
     L = []
-
+    global error
     def getNext(page=1):
         # api中包含count参数，此参数不能作为具体数量标准但翻页过程中如果count变为0则全部获取完成，通过改变page进行翻页，默认一页20项
         # 一般不会超过20项
@@ -28,7 +28,8 @@ def getByShapes(shape, types):
                 L.append([data['id'], data['parent'] if len(data['parent']) > 0 else '',
                       data['name'], data['type'], data['address'], data['location']])
             except:
-                print(data)
+                # print(data)
+                error.append(data)
         if int(arOj['count']) > 0:
             # count != 0 时代表还未获取完全，递归继续读取
             # print(arOj['count'], page)

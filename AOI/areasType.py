@@ -1,6 +1,7 @@
 import amapApi as am
 import pandas as pd
 from getRectangle import getShape
+from tqdm import tqdm
 import os
 
 saveDir = 'D:\\data\\'  # 保存地址
@@ -15,8 +16,10 @@ for i in range(0, 11):  # 分了100份，0-99，大家自己填自己的范围�
      shape = getShape(i)
      if not os.path.exists(saveDir + str(i)):
           os.mkdir(saveDir + str(i))
-     for key in D.keys():
+     for key in tqdm(D.keys()):
           df = pd.DataFrame(am.getByShapes(shape, D[key]),
                             columns=['id', 'parent', 'name', 'type', 'address', 'location'])
           df.to_csv(saveDir + str(i) + '\\' + key + '.csv', index=False)
+     df = pd.DataFrame(am.error)
+     df.to_csv(saveDir + str(i) + '\\error.csv', index=False)
 
