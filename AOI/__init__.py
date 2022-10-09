@@ -2,7 +2,7 @@ import os
 import amapApi as am
 # import pandas as pd
 
-udir = "D:\\Project\\python\\amapCrawler\\AOI\\data_class"
+udir = "D:\\Project\\amapCrawler\\AOI\\data_class"
 odir = "E:\\BaiduNetdiskDownload\\try"
 shp = "D:\\\Project\\python\\amapCrawler\\AOI\\classOut"
 
@@ -20,7 +20,6 @@ def getFiles(path, topath):
 s, o = getFiles(udir, odir)
 print(s)
 
-
-import poiToShp as ats
-
-ats.transferFiles(s, shp)
+import AOIGetter as aoiWe
+for i in s:
+    aoiWe.addAoi(i)

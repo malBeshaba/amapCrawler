@@ -25,6 +25,7 @@ def initWeb(opt):
 
 
 web = initWeb(option)
+num = 0
 
 
 def isElementFromID(browser, poi):
@@ -102,7 +103,7 @@ def webVisiter(poi):
     :param poi: id
     """
     url = base_url + poi
-    global web
+    global web, num
     try:
         web.get(url)
     except:
@@ -111,9 +112,13 @@ def webVisiter(poi):
         print('reloading···')
         webVisiter(poi)
     time.sleep(random.random() * 5 + 2)  # 进入页面后等待随机时间
+    if num > 15:
+        web.quit()
+        web = initWeb(option)
     if isElementFromID(web, 'tb-beacon-aplus'):  # 进入自动滑块验证环节
         # print('进入自动验证:', poi)
         verify_page(web, poi)
+        num += 1
         webVisiter(poi)
     elif isElementFromID(web, 'beacon-aplus'):  # 出现账号密码验证环节通过重新初始化浏览器解决
         # print('出现密码验证')
@@ -124,6 +129,7 @@ def webVisiter(poi):
         web.get(url)
     else:
         get_shape(web)  # 不存在验证时读取shape
+        num = 0
 
 
 def addAoi(path):
