@@ -20,6 +20,8 @@ def getByShapes(shape, types):
         pois = arOj['pois']
         for num in range(len(pois)):
             data = pois[num]
+            if data['pname'] != '广东省':
+                continue
             L.append([data['id'], data['parent'] if len(data['parent']) > 0 else '',
                       data['name'], data['type'], data['address'], data['location']])
         if int(arOj['count']) > 0:
