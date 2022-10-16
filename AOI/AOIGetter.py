@@ -7,12 +7,14 @@ import random
 import json
 import pandas as pd
 from tqdm import tqdm  # 进度条
+from plyer import notification
 
 option = Options()
 option.add_argument('disable-blink-features=AutomationControlled')
 # option.add_argument("--proxy-server=http://117.41.38.18:9000")
 base_url = "https://ditu.amap.com/detail/get/detail?id="
 shapeStr = ''
+verI = -1
 
 
 def initWeb(opt):
@@ -21,11 +23,26 @@ def initWeb(opt):
     :param opt: option参数
     :return: Chrome对象
     """
+    global verI
+    notification.notify(
+        title="注意",
+        message="需要您辅助滑动验证直至完成登录",
+        timeout=10
+    )
+    verI = 0
     return Chrome(options=opt)
 
 
 web = initWeb(option)
 num = 0
+
+
+def isElementFromClass(browser, value):
+    try:
+        browser.find_elements_by_class_name(value)
+        return True
+    except exceptions.NoSuchElementException:
+        return False
 
 
 def isElementFromID(browser, poi):
@@ -48,7 +65,9 @@ def verify_page(browser, poi):
     :param browser: 浏览器
     :param poi: id
     """
+    global verI
     while not isElementFromID(browser, 'nc_1_n1z'):  # 由于弱网环境可能出现滑块控件加载不出来的情况，进行几次重新请求直达滑块出现
+
         url = base_url + poi
         browser.get(url)
         time.sleep(random.random() * 5 + 3)
@@ -58,7 +77,14 @@ def verify_page(browser, poi):
         action.click_and_hold(btn).perform()  # 点击并按住滑块
         time.sleep(random.random() * 5)  # 等待随机时间
         # for i in range(40):
-        action.move_by_offset(400, 0).perform()  # 滑动滑块
+        if verI == 0:
+            for i in range(10):
+                action.move_by_offset(30, 0)  # 滑动滑块
+                # time.sleep(0.2)
+            action.release().perform()
+        else:
+            action.move_by_offset(296, 0).perform()  # 滑动滑块
+            verI = -1
         time.sleep(random.random())
     except:
         webVisiter(poi)  # 如果出现异常则重新请求
@@ -66,18 +92,19 @@ def verify_page(browser, poi):
 
 def ac_page(browser, poi):
     browser.find_element_by_id('account').click()
-    browser.find_element_by_id('account').send_keys("18822149353")
+    browser.find_element_by_id('account').send_keys("这里是账号")
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('password').click()
-    browser.find_element_by_id('password').send_keys('wsyxxbb111')
+    browser.find_element_by_id('password').send_keys('这里是密码')
     time.sleep(random.random() * 0.01)
     btn = browser.find_element_by_id('nc_1_n1z')  # 根据id定位滑块控件
     action = ActionChains(browser)
     action.click_and_hold(btn).perform()  # 点击并按住滑块
     time.sleep(random.random() * 5)  # 等待随机时间
-    action.move_by_offset(400, 0).perform()  # 滑动滑块
+    action.move_by_offset(290, 0).perform()  # 滑动滑块
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('login_btn').click()
+
 
 def get_shape(browser):
     """
@@ -112,17 +139,25 @@ def webVisiter(poi):
         webVisiter(poi)
     time.sleep(random.random() * 5 + 2)  # 进入页面后等待随机时间
     if num > 15:
+        num = 0
         web.quit()
         web = initWeb(option)
     if isElementFromID(web, 'tb-beacon-aplus'):  # 进入自动滑块验证环节
         # print('进入自动验证:', poi)
-        verify_page(web, poi)
-        num += 1
-        # webVisiter(poi)
+        if len(web.find_elements_by_class_name('label')) > 0:
+            # print(len(web.find_elements_by_class_name('label')))
+            num = 0
+            web.quit()
+            web = initWeb(option)
+            webVisiter(poi)
+        else:
+            verify_page(web, poi)
+            num += 1
+            webVisiter(poi)
     elif isElementFromID(web, 'beacon-aplus'):  # 出现账号密码验证
         ac_page(web, poi)
         time.sleep(3)
-        web.get(url)
+        webVisiter(poi)
     else:
         get_shape(web)  # 不存在验证时读取shape
         num = 0
@@ -146,5 +181,5 @@ def addAoi(path):
             L.append(shapeStr.replace(',', '-').replace(';', '|'))  # 为方便在csv中读取转换分割方式
             pbar.update(1)
     df.insert(loc=len(df.columns), column='shape', value=L)  # 输入一列
-    df.to_csv(path, index=None)
+    df.to_csv(path, index=False)
     print(path, 'AOI补充完成')
