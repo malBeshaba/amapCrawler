@@ -92,10 +92,10 @@ def verify_page(browser, poi):
 
 def ac_page(browser, poi):
     browser.find_element_by_id('account').click()
-    browser.find_element_by_id('account').send_keys("18822149353")
+    browser.find_element_by_id('account').send_keys("账号")
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('password').click()
-    browser.find_element_by_id('password').send_keys('wsyxxbb111')
+    browser.find_element_by_id('password').send_keys('密码')
     time.sleep(random.random() * 0.01)
     btn = browser.find_element_by_id('nc_1_n1z')  # 根据id定位滑块控件
     action = ActionChains(browser)
