@@ -1,7 +1,7 @@
 import os
 import AOIGetter as aoiWe
 
-udir = r"D:\data"  # 存储poi信息的文件夹
+udir = r"D:\POI\分配\王申宇\湛江市"  # 存储poi信息的文件夹
 
 
 def getFiles(path):
@@ -12,10 +12,7 @@ def getFiles(path):
     return s
 
 
-s = getFiles(udir)
-Files = []
-for i in s:
-    Files += getFiles(i)
+Files = getFiles(udir)
 print(Files)
 for f in Files:
     try:
