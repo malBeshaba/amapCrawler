@@ -1,3 +1,5 @@
+import os.path
+
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
@@ -15,6 +17,8 @@ option.add_argument('disable-blink-features=AutomationControlled')
 base_url = "https://ditu.amap.com/detail/get/detail?id="
 shapeStr = ''
 verI = -1
+current_path = os.path.dirname(__file__)
+tempfile = current_path + '/data_out/temp.txt'
 
 
 def initWeb(opt):
@@ -79,12 +83,18 @@ def verify_page(browser, poi):
         # for i in range(40):
         if verI == 0:
             for i in range(10):
-                action.move_by_offset(30, 0)  # 滑动滑块
+                action.move_by_offset(25, 2)  # 滑动滑块
                 # time.sleep(0.2)
-            action.release().perform()
+                # verI = -1
+            action.move_by_offset(4, 0)
+            time.sleep(random.random() * 5)
+            action.perform()
         else:
-            action.move_by_offset(296, 0).perform()  # 滑动滑块
+            action.move_by_offset(254, 0)  # 滑动滑块
+            time.sleep(0.2)
+            action.perform()
             verI = -1
+
         time.sleep(random.random())
     except:
         webVisiter(poi)  # 如果出现异常则重新请求
@@ -92,10 +102,10 @@ def verify_page(browser, poi):
 
 def ac_page(browser, poi):
     browser.find_element_by_id('account').click()
-    browser.find_element_by_id('account').send_keys("账号")
+    browser.find_element_by_id('account').send_keys("18822149353")
     time.sleep(random.random() * 0.01)
     browser.find_element_by_id('password').click()
-    browser.find_element_by_id('password').send_keys('密码')
+    browser.find_element_by_id('password').send_keys('wsyxxbb111')
     time.sleep(random.random() * 0.01)
     btn = browser.find_element_by_id('nc_1_n1z')  # 根据id定位滑块控件
     action = ActionChains(browser)
@@ -172,14 +182,31 @@ def addAoi(path):
     if 'shape' in df.columns:
         print(path, 'AOI补充完成')
         return
-    L = []
+    current_path = os.path.dirname(__file__)
+    if os.path.isfile(tempfile):
+        pass
+    else:
+        text_file = open(tempfile, 'w')
+        text_file.write(path + '\n')
+        text_file.close()
+    tf = open(tempfile, 'r')
+    L = [item.replace('\n', '') for item in tf.readlines()[1:]]
+    print(L)
+    tf.close()
     with tqdm(total=len(df), desc=path.split('\\')[-1].split('.')[0], leave=True, ncols=100, unit_scale=True) as pbar:
         for i in range(len(df)):
+            if i < len(L):
+                pbar.update(1)
+                continue
             # 逐行读取
             pid = df['id'][i]
             webVisiter(pid)
             L.append(shapeStr.replace(',', '-').replace(';', '|'))  # 为方便在csv中读取转换分割方式
+            tf = open(tempfile, 'a')
+            tf.write(shapeStr.replace(',', '-').replace(';', '|') + '\n')
+            tf.close()
             pbar.update(1)
     df.insert(loc=len(df.columns), column='shape', value=L)  # 输入一列
     df.to_csv(path, index=False)
+    os.remove(current_path + '/data_out/temp.txt')
     print(path, 'AOI补充完成')
